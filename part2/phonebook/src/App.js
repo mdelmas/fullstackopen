@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import personsService from './services/Persons'
 
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
@@ -12,8 +13,8 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
+    personsService.getAll()
+      .then(persons => setPersons(persons))
   }, [])
 
   const handleNewNameChange = (event) => setNewName(event.target.value)
@@ -23,11 +24,29 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if (persons.find((person) => person.name === newName)) return alert(`${newName} is already added to phonebook`)
+    const existingPerson = persons.find((person) => person.name === newName);
+    if (existingPerson) {
+      let updatedPerson = {...existingPerson, number: newNumber }
+      if (window.confirm(`${updatedPerson.name} is already added to the phonebook, replace the old number with a new one ?`)) {
+        personsService.updatePerson(updatedPerson.id, updatedPerson).then((updatedPerson) => {
+          setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
+        })   
+      }
+    } else {
+      personsService.createPerson({ name: newName, number: newNumber }).then((newPerson) => {
+        setPersons(persons.concat(newPerson))
+      })  
+    }
 
-    setPersons(persons.concat({ name: newName, number: newNumber, id: persons.length+1 }))
     setNewName('')
     setNewNumber('')
+  }
+
+  const deletePerson = (id) => {
+    const person = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personsService.deletePerson(id).then((() => setPersons(persons.filter(person => id !== person.id))))
+    }
   }
 
   const personsToShow = filter ? persons.filter(person => person.name.toLowerCase().includes(filter)) : persons
@@ -45,7 +64,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePerson} />
     </div>
   )
 }
