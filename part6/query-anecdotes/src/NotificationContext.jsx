@@ -38,4 +38,15 @@ export const useNotificationDispatch = () => {
   return notificationDispatch
 }
 
+export const useNotification = () => {
+  const [_, notificationDispatch] = useContext(NotificationContext)
+
+  return (message) => {
+    notificationDispatch({ type: 'DISPLAY', payload: message})
+    setTimeout(() => {
+      notificationDispatch({ type: 'CLEAR' })
+    }, 4000);  
+  }
+}
+
 export default NotificationContext

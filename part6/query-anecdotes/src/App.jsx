@@ -5,11 +5,11 @@ import { getAll, modifyAnecdote } from './requests'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 
-import { useNotificationDispatch } from './NotificationContext'
+import { useNotification } from './NotificationContext'
 
 
 const App = () => {
-  const notificationDispatch = useNotificationDispatch()
+  const displayNotification = useNotification()
 
   const queryClient = useQueryClient()
   const modifyAnecdoteMutation = useMutation(modifyAnecdote, {
@@ -20,16 +20,10 @@ const App = () => {
         anecdotes.map(anecdote => anecdote.id === modifiedAnecdote.id ? modifiedAnecdote : anecdote)
       )
 
-      notificationDispatch({ type: 'DISPLAY', payload: `Voted for anecdote : ${modifiedAnecdote.content}`})
-      setTimeout(() => {
-        notificationDispatch({ type: 'CLEAR' })
-      }, 4000);
+      displayNotification(`Voted for anecdote : ${modifiedAnecdote.content}`)
     },
     onError: (error) => {
-      notificationDispatch({ type: 'DISPLAY', payload: `Error when voting for anecdote: ${error}`})
-      setTimeout(() => {
-        notificationDispatch({ type: 'CLEAR' })
-      }, 4000);
+      displayNotification(`Error when voting for anecdote: ${error}`)
     }
   })
 
