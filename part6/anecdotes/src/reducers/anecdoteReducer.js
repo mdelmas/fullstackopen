@@ -1,60 +1,36 @@
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
+import { createSlice } from '@reduxjs/toolkit'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
+const initialState = []
 
-const initialState = anecdotesAtStart.map(asObject)
-
-export const createAnecdote = (content) => {
-  return {
-    type: 'NEW',
-    payload: {
-      content, 
-      id: getId(),
-      votes: 0
-    }
-  }
-}
-
-export const voteAnecdote = (id) => {
-  return {
-    type: 'VOTE',
-    payload: {
-      id
-    }
-  }
-}
-
-const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
-
-  switch (action.type) {
-    case 'NEW': 
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      console.log('in createAnecdote reducer', JSON.parse(JSON.stringify(state)), action)
       return state.concat(action.payload)
-    case 'VOTE':
-      const anecdoteToChange = state.find(anecdote => anecdote.id === action.payload.id)
+    },
+    voteAnecdote(state, action) {
+      console.log('in voteAnecdote reducer', JSON.parse(JSON.stringify(state)), action)
+
+      const anecdoteToChange = state.find(anecdote => anecdote.id === action.payload)
       const changedAnecdote = {
         ...anecdoteToChange,
         votes: anecdoteToChange.votes + 1
       }
-      return state.map(anecdote => anecdote.id === action.payload.id ? changedAnecdote : anecdote)
-    default: return state
-  }
-}
 
-export default reducer
+      const changedState = state.map(anecdote => anecdote.id === action.payload ? changedAnecdote : anecdote)
+
+      return changedState
+    },
+    setAnecdotes(state, action) {
+      console.log('in setAnecdotes reducer', JSON.parse(JSON.stringify(state)), action)
+      return action.payload
+    }
+  }
+})
+
+export const { createAnecdote, voteAnecdote, setAnecdotes } = anecdoteSlice.actions
+export default anecdoteSlice.reducer
