@@ -1,0 +1,55 @@
+{
+  "persons": [
+    {
+      "name": "Johanne Ethan",
+      "number": "520 243-5223",
+      "id": 1
+    },
+    {
+      "name": "Gaëtane Alban",
+      "number": "702 718-1602",
+      "id": 2
+    },
+    {
+      "name": "Philbert Léonie",
+      "number": "856 462-6322",
+      "id": 3
+    },
+    {
+      "name": "Marise Delphine",
+      "number": "782 693-5248",
+      "id": 4
+    },
+    {
+      "name": "Noémie Géraldine",
+      "number": "613 322-1145",
+      "id": 5
+    },
+    {
+      "name": "Morgane Delmas",
+      "number": "123",
+      "id": 6
+    }
+  ],
+  "notes": [
+    {
+      "id": 1,
+      "content": "HTML is easy",
+      "important": true
+    },
+    {
+      "id": 2,
+      "content": "Browser can execute only JavaScript",
+      "important": false
+    },
+    {
+      "id": 3,
+      "content": "GET and POST are the most important methods of HTTP protocol",
+      "important": true
+    },
+    {
+      "content": "New note :)",
+      "id": 4
+    }
+  ]
+}
